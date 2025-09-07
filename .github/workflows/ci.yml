@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build-test:
+    name: Lint, Build, Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        go: [ "1.25.x" ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+
+      - name: Download modules
+        run: go mod download
+
+      - name: fmt (fail if files need formatting)
+        shell: bash
+        run: |
+          out="$(gofmt -s -l .)"
+          if [ -n "$out" ]; then
+            echo "These files are not gofmt -s clean:"
+            echo "$out"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test (with race on non-Windows)
+        if: runner.os != 'Windows'
+        run: go test -v -race ./...
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        run: go test -v ./...
