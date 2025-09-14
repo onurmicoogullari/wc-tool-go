@@ -1,5 +1,8 @@
 # wc-tool-go
 
+[![CI](https://github.com/onurmicoogullari/wc-tool-go/actions/workflows/ci.yml/badge.svg)](https://github.com/onurmicoogullari/wc-tool-go/actions/workflows/ci.yml)  
+[![Release](https://github.com/onurmicoogullari/wc-tool-go/actions/workflows/cd.yml/badge.svg)](https://github.com/onurmicoogullari/wc-tool-go/actions/workflows/cd.yml)  
+
 This project is a custom implementation of the classic Unix `wc` (word count) tool, written in Go.
 
 I built it as part of my journey to learn Go by working through the [Coding Challenges](https://codingchallenges.fyi/) series.
