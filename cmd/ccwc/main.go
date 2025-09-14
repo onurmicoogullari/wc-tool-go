@@ -14,6 +14,21 @@ import (
 
 func parseFlags(args []string) (ccwc.Options, string, error) {
 	fs := flag.NewFlagSet("ccwc", flag.ContinueOnError)
+	fs.SetOutput(os.Stdout)
+	fs.Usage = func() {
+		out := fs.Output()
+		fmt.Fprintf(out, "Usage %s [OPTIONS] [FILE]\n", fs.Name())
+		fmt.Fprintln(out, "Counts lines, words, bytes and characters of a given input.")
+		fmt.Fprintln(out, "If FILE is provided, input is read from the file; otherwise, input is read from stdin.")
+		fmt.Fprintln(out, "\nOptions:")
+		fs.PrintDefaults()
+		fmt.Fprintln(out, "\nExamples:")
+		fmt.Fprintf(out, "  %s -w -c ./path/to/file\n", fs.Name())
+		fmt.Fprintf(out, "  cat /path/to/file | %s -w -c\n", fs.Name())
+		fmt.Fprintf(out, "  %s -w -c ./path/to/file > /path/to/file.wc\n", fs.Name())
+		fmt.Fprintf(out, "  %s -w -c - < /path/to/file\n", fs.Name())
+		fmt.Fprintf(out, "  %s -w -c ./path/to/file > /path/to/file.wc\n", fs.Name())
+	}
 	var (
 		c = fs.Bool("c", false, "prints the byte count")
 		l = fs.Bool("l", false, "prints the line count")
